@@ -1,0 +1,54 @@
+\documentclass[a4paper]{article}
+
+\usepackage{fullpage} % Package to use full page
+\usepackage{parskip} % Package to tweak paragraph skipping
+\usepackage{tikz} % Package for drawing
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{hyperref}
+
+\usepackage{setspace}
+\doublespacing
+
+\usepackage{natbib}
+
+\title{Classification Methods on Portfolio Optimization}
+\author{Eric Wang}
+\date{\today}
+
+\renewcommand{\figurename}{Ffigwr}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+\subsection{Mean-Variance Optimization}
+
+We begin with Mean-Variance Optimization(MVO) proposed by \cite{markowitz_portfolio_1952}...
+
+Unfortunately, MVO relies on an accurate estimate of expected return $\mu$ and the covariance matrix $\Sigma$. In real world, its performance is very sensitive to the estimation error and often requires large dataset. Typically, the sample covariance is defined by
+
+$$
+\Sigma=\frac{1}{N-1} \mathbf{X X}^{\prime}
+$$
+
+where
+
+$$
+\mathbf{X}=\left[\begin{array}{ccc}
+    R_{11} & \ldots & R_{1 T} \\
+    \vdots & \ddots & \vdots \\
+    R_{N 1} & \ldots & R_{N T}
+    \end{array}\right]-\left[\begin{array}{ccc}
+    \bar{R}_1 & \ldots & \bar{R}_1 \\
+    \vdots & \ddots & \vdots \\
+    \bar{R}_N & \ldots & \bar{R}_N
+    \end{array}\right]
+$$
+
+
+\bibliographystyle{chicago}
+\bibliography{ref.bib}
+\end{document}
