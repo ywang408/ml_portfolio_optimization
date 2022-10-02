@@ -280,3 +280,6 @@ TSWLatexianTemp*
 
 # api_key
 alpha_vantage_api.txt
+
+# stock data
+stocks.pkl
