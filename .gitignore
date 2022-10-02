@@ -277,3 +277,6 @@ TSWLatexianTemp*
 
 # OSX files
 .DS_Store
+
+# api_key
+alpha_vantage_api.txt
