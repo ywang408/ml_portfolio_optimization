@@ -22,7 +22,7 @@
 
 \usepackage{natbib}
 
-\title{Classification Methods Applied on Portfolio Optimization}
+\title{Machine Learning Applied on Portfolio Optimization}
 \author{Eric Wang}
 \date{\today}
 
@@ -128,7 +128,7 @@ I set the transaction fee to be 1\%, results are shown in figure \ref{backtest1}
     \caption{Backtesing Result}\label{backtest1}
 \end{figure}
 
-Indeed, if I relax some constraints of my trading strategy, for example, I only empty my portfolio when there's a bear market detected in 10 days. The performance of my portfolio will be much more better, which benefits from K-means clustering gives me a good result of detecting market regime, see figure \ref{backtest2}. It not only performs better than SPY but also avoids huge drops during bear markets.
+Indeed, if I relax some constraints of my trading strategy, for example, I only empty my portfolio when there's a bear market detected in 10 days. The performance of my portfolio will be much more better, which benefits from K-means clustering gives me a good result of detecting market regime, see figure \ref{backtest2}. It not only performs better than SPY in bull or calm markets but also avoids huge drops during bear markets.
 
 \begin{figure}[H]
     \centering
@@ -143,9 +143,9 @@ In my project, I try several ways to detect the regimes of market and find that 
 At the end, there're many future works to do:
 
 \begin{itemize}
-    \item In the beginning, I want to build a factor model using auto-encoders as \cite{gu_autoencoder_2021} proposed in his article. However, it requires me a lot of prerequisite knowledge to replicate and modify his method so I give up this idea. And I believe it's interesting to implement and the covariance matrix estimation would be more accurate.
-    \item The SVM method to determine whether to invest a stock is superficial, indeed there're many other methods to be investigated. Once I find a more efficient method, the performance of my backtesting result will be better.
-    \item Besides, the trading strategy I used in my project can also be improved to get a better result.
+    \item In the beginning, I want to build a factor model using auto-encoders as \cite{gu_autoencoder_2021} proposed in his article. However, it requires me a lot of prerequisite knowledge about asset pricing to replicate and modify his method so I give up this idea. And I believe it's interesting to be implemented and the covariance matrix estimation would be more accurate.
+    \item The SVM method to determine whether to invest a stock is superficial, and there're many other methods to be investigated. Once I find a more efficient method, the performance of my backtesting result will be better.
+    \item Besides, the trading strategy I used in my project can also be improved to get a better result. I think it's also possible to use a deep learning method here, for TD learning or policy gradient.
 \end{itemize}
 
 \section{Appendix}
