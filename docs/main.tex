@@ -2,9 +2,9 @@
 
 \usepackage{fullpage} % Package to use full page
 \usepackage{parskip} % Package to tweak paragraph skipping
-\usepackage{tikz} % Package for drawing
+% \usepackage{tikz} % Package for drawing
 \usepackage{amsmath}
-\usepackage{amsfonts}
+% \usepackage{amsfonts}
 \usepackage{hyperref}
 \usepackage{listings}
 \usepackage{mathptmx}
@@ -22,7 +22,7 @@
 
 \usepackage{natbib}
 
-\title{Classification Methods on Portfolio Optimization}
+\title{Classification Methods Applied on Portfolio Optimization}
 \author{Eric Wang}
 \date{\today}
 
@@ -36,7 +36,7 @@
 
 This project is built with python and all of my codes can be accessed through my \href{https://github.com/ywang408/ml_portfolio_optimization}{github}. In this project, instead of using global Mean-Variance Optimization(MVO) strategy with a fixed window for re-allocating assets, I use a more flexible strategy to estimate expected return, covariance matrix and determine when to adjust the portfolio weights.
 
-I try several unsupervised learning models to analyze the market regimes, and I find that K-means with technical indicators outperforms the other models. To minimize the risk of my portfolio, I use all S\&P 500 component stocks as my stock pool. However, a very large dataset is required to estimate the expected return and covariance matrix of all 500 stocks, thus I use Support Vector Machine(SVM) to create a subset of stocks for investing before re-allocating my portfolio. I also use a shrinkage estimator for covariance matrix to make sure that it's positive definite such that optimization problem can be solved. At the end, I choose an proper optimization strategy to build my portfolio, results of backtesting shows that this strategy is practicable.
+I try several unsupervised learning models to analyze the market regimes, and I find that K-means clustering with technical indicators outperforms the other models. To minimize the risk of my portfolio, I use all S\&P 500 component stocks as my stock pool. However, a very large dataset is required to estimate the expected return and covariance matrix of all 500 stocks, thus I use Support Vector Machine(SVM) to create a subset of stocks for investing before re-allocating my portfolio. I also use a shrinkage estimator for covariance matrix to make sure that it's positive definite such that optimization problem can be solved. At the end, I choose an proper optimization strategy to build my portfolio, results of backtesting shows that this strategy is practicable.
 
 % This report is organized as following, in chapter 2, I discuss the process of handling data, how to use Gaussian Mixture Method and K-means method to analyze the market regime, and show the performance of using Support Vector Machine(SVM) to determine whether to invest a stock. In chapter 3, I will use different optimization strategies to build my portfolio based on the analysis of chapter 2 and I put my conclusion in chapter 4.
 
@@ -100,7 +100,7 @@ Figure \ref{kmeans_4states} is a figure of 4 states' returns versus standard dev
 
 \subsection{SVM on Stock Selection}
 
-To shrink the number of stocks we invest in, I simply use all the technical indicators to fit the model. The input is all the indicators and output is to determine if the SMA(30 days) two weeks later will be larger than toady's SMA. I test 50 stocks and the prediction accuracy is around 85\%. It's not very high but it's enough for me to shrink the stock pool.
+To shrink the number of stocks we invest in, I simply use all the technical indicators to fit the model. The input is all the indicators and output is to determine if the SMA(30 days) two weeks later will be larger than toady's SMA. I test 50 stocks and the prediction accuracy is around 85\%. It's not very high but it's enough for me to get a smaller stock pool.
 
 \section{Backtesting}
 
@@ -108,7 +108,7 @@ In this section, I will do my backtesting based on the research of Chapter \ref{
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.4]{invest.png}
+    \includegraphics[scale=0.35]{invest.png}
     \caption{Flow Chart}\label{flow_chart}
 \end{figure}
 
@@ -120,12 +120,20 @@ In my implementation, I use \href{https://pyportfolioopt.readthedocs.io/en/lates
     \item In other cases, I use maximize the sharpe ratio given sum of all weights equals to 1.
   \end{enumerate}
 
-I set the transaction fee to be 1\%, results are shown in figure \ref{backtest1}. It doesn't outperform SPY a lot, but we notice that when SPY drops a lot, P\&L of our portfolio doesn't change because we sell all the stocks in advance.
+I set the transaction fee to be 1\%, results are shown in figure \ref{backtest1}. Blue line is my portfolio, green is SPY and orange is equal-weighted portfolio. It doesn't outperform SPY a lot, but we notice that when SPY drops a lot, P\&L of our portfolio doesn't change because we sell all the stocks in advance.
 
 \begin{figure}[H]
     \centering
     \includegraphics[scale=0.3]{backtest1.png}
     \caption{Backtesing Result}\label{backtest1}
+\end{figure}
+
+Indeed, if I relax some constraints of my trading strategy, for example, I only empty my portfolio when there's a bear market detected in 10 days. The performance of my portfolio will be much more better, which benefits from K-means clustering gives me a good result of detecting market regime, see figure \ref{backtest2}. It not only performs better than SPY but also avoids huge drops during bear markets.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.3]{backtest2.png}
+    \caption{Backtesing Result 2}\label{backtest2}
 \end{figure}
 
 \section{Conclusion}
