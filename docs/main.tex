@@ -44,29 +44,31 @@ I try several unsupervised learning models to analyze the market regimes, and I 
 
 \subsection{Data Collection}
   
-I use \href{https://github.com/ranaroussi/yfinance}{yfinance} to download all the data of stocks in S\&P 500 \footnote[1]{We can easily use \lstinline{read_html()} in pandas to get all tickers in S\&P 500}. The SPDR S\&P 500 trust(SPY) was launched on 1993, by downloading all stocks data after 1993 and dropping stocks in which there're more than 5\% undefined numbers, I use 426 stocks for analysis and backtesting.
+I use \href{https://github.com/ranaroussi/yfinance}{yfinance} to download all the data of stocks in S\&P 500 \footnote[1]{We can easily use \lstinline{read_html()} in pandas to get all tickers in S\&P 500 wiki.}. The SPDR S\&P 500 trust(SPY) was launched on 1993, by downloading all stocks data after 1993 and dropping stocks in which there're more than 5\% undefined numbers, I use 426 stocks for analysis and backtesting.
 
 I use \href{https://www.alphavantage.co/}{Alpha Vantage} to download data of economic indicators. And I use following indicators in my analysis: Federal Funds Rate, Consumer Price Index (CPI), Inflation Expectation, Consumer Sentiment and Unemployment.
 
 For technical indicators of stocks, most of them, including Simple Moving Average (SMA), Standard Deviation, Exponential Moving Average (EMA), High minus Low and Close minus Open, are calculated by pandas. Indicators about momentum such as Relative Strength Index (RSI),  parabolic SAR (SAR), Average Directional Movement index (ADX) are calculated via \href{https://mrjbq7.github.io/ta-lib/}{TA-lib}.
 
+I write a script which downloads data, cleans data, calculates technical indicators and at last saves them to a binary file.
+
 \subsection{Market Regime Detection}
 
-Upon the materials we talk about on class, a natural idea to use a Hidden Markov Model(HMM) with economic indicators to detect the regime of market. However, I try to change the number of states and shrink some inputs, the result always makes no sense as it groups by time and not the market regimes, for example, see figure \ref{hmm_figure}. I think there're two reasons, the dataset is relatively small because most economic indicators are reported monthly, and economic are slow to react compared with the equity market change.
+Upon the materials we talk about on class, a natural idea to use a Hidden Markov Model(HMM) with economic indicators to detect the regime of market. However, I try to change the number of states and shrink some inputs, the result always makes no sense as it groups by time or price and not the market regimes, for example, see figure \ref{hmm_figure}. I think there're two reasons, the dataset is relatively small because most economic indicators are reported monthly, and economic are slow to react compared with the equity market change.
 
 \begin{figure}[H]
     \includegraphics[scale=0.3]{hmm_eco_indic.png}
     \caption{Using HMM to detect Market Regime}\label{hmm_figure}
 \end{figure}
 
-\cite{cont_empirical_nodate} proposes that high-volatility events of stocks tend to cluster in time. And according to an \href{https://www.twosigma.com/articles/a-machine-learning-approach-to-regime-modeling/}{article} from Two Sigma, I use GMM to estimate the market regime. The idea is that returns of financial assets do not always follow a normal distribution, GMM fits various Gaussian distributions to capture different parts of the asset’s return distribution, and each of those distributions would have its own properties. I use returns of SPY and its moving average to fit GMM and get best result assuming there're 4 underlying clusters, see figure \ref{gmm_figure}. Although the figure gives a appropriate classification, it's hard to explain green points(state 2) after year 2020.
+\cite{cont_empirical_nodate} proposes that high-volatility events of stocks tend to cluster in time. And according to an \href{https://www.twosigma.com/articles/a-machine-learning-approach-to-regime-modeling/}{article} from Two Sigma, I use GMM to estimate the market regime. The idea is that returns of financial assets do not always follow a normal distribution, GMM fits various Gaussian distributions to capture different parts of the asset’s return distribution, and each of those distributions would have its own properties. I use returns of SPY and its moving average to fit GMM and get best result assuming there're 4 underlying clusters, see figure \ref{gmm_figure}. Although the figure gives a appropriate classification, it's hard to explain green points(state 2) after year 2020,  its results doesn't have a good interpretation.
 
 \begin{figure}[H]
     \includegraphics[scale=0.3]{GMM_tech_indic.png}
     \caption{Using GMM to detect Market Regime}\label{gmm_figure}
 \end{figure}
 
-Since we know that high-volatility events of stocks tend to cluster in time, another way is to use K-means clustering to classify market regimes. In my test, using SMA, standard deviation, High minus Low, Close minus Open and RSI gives us best result. In each test, I use Elbow plot to determine the number of clusters K, then use K to fit the model. Take my final result as an example, to determine the number of clusters(K), I first create a Elbow plot, see figure \ref{k_clusters}.
+Since we know that high-volatility events of stocks tend to cluster in time, another way is to use K-means clustering to classify market regimes. In my test, using SMA, standard deviation, High minus Low, Close minus Open and RSI gives me the best result. In each test, I use Elbow plot to determine the number of clusters K, then use K to fit the model. Take my final result as an example, to determine the number of clusters(K), I first create a Elbow plot, see figure \ref{k_clusters}.
 
 \begin{figure}[H]
     \centering
@@ -74,7 +76,7 @@ Since we know that high-volatility events of stocks tend to cluster in time, ano
     \caption{Elbow plot of K-means}\label{k_clusters}
 \end{figure}
 
-From the figure, we choose to use 4 clusters to fit K-means model, and K-means fits the data perfectly, see figure \ref{kmeans_all}. Figure \ref{kmeans_2008} show a closer result of financial crisis, we find that there's always huge jump around green points (state 2).
+From the figure, we choose to use 4 clusters to fit K-means model, and K-means fits the data perfectly and delivers a very good interpretation of market regimes, see figure \ref{kmeans_all}. Figure \ref{kmeans_2008} show a closer result of financial crisis, we find that there's always huge jump around green points (state 2).
 
 \begin{figure}[H]
     \includegraphics[scale=0.3]{kmeans_all.png}
@@ -145,7 +147,7 @@ At the end, there're many future works to do:
 \begin{itemize}
     \item In the beginning, I want to build a factor model using auto-encoders as \cite{gu_autoencoder_2021} proposed in his article. However, it requires me a lot of prerequisite knowledge about asset pricing to replicate and modify his method so I give up this idea. And I believe it's interesting to be implemented and the covariance matrix estimation would be more accurate.
     \item The SVM method to determine whether to invest a stock is superficial, and there're many other methods to be investigated. Once I find a more efficient method, the performance of my backtesting result will be better.
-    \item Besides, the trading strategy I used in my project can also be improved to get a better result. I think it's also possible to use a deep learning method here, for TD learning or policy gradient.
+    \item Besides, the trading strategy I used in my project can also be improved to get a better result. I think it's also possible to use a deep learning method here.
 \end{itemize}
 
 \section{Appendix}
