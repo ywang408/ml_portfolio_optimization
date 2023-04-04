@@ -9,6 +9,7 @@ A regime-based investing strategy is implemented in this repo, it contains
   - K-means
 - Using support vector machine to select stocks in re-adjusting portfolio windows
 - Implementation of the global minimum variance portfolio, covariance matrix is estimated by constant correlation shrinkage method.
+- Taking 3% transaction fee into account
 
 ## Back-testing results
 
